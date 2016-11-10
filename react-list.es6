@@ -182,7 +182,7 @@ module.exports = class ReactList extends Component {
   }
 
   getItemSizeAndItemsPerRow() {
-    const {axis, useStaticSize} = this.props;
+    const {axis, useStaticSize, fixRowNum} = this.props;
     let {itemSize, itemsPerRow} = this.state;
     if (useStaticSize && itemSize && itemsPerRow) {
       return {itemSize, itemsPerRow};
@@ -203,14 +203,18 @@ module.exports = class ReactList extends Component {
 
     if (!itemSize) return {};
 
-    const startKey = OFFSET_START_KEYS[axis];
-    const firstStart = firstEl[startKey];
-    itemsPerRow = 1;
-    for (
-      let item = itemEls[itemsPerRow];
-      item && item[startKey] === firstStart;
-      item = itemEls[itemsPerRow]
-    ) ++itemsPerRow;
+    if (!fixRowNum) {
+      const startKey = OFFSET_START_KEYS[axis];
+      const firstStart = firstEl[startKey];
+      itemsPerRow = 1;
+      for (
+        let item = itemEls[itemsPerRow];
+        item && item[startKey] === firstStart;
+        item = itemEls[itemsPerRow]
+      ) ++itemsPerRow;
+    } else {
+      itemsPerRow = fixRowNum;
+    }
 
     return {itemSize, itemsPerRow};
   }
